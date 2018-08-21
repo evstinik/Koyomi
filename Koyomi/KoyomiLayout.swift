@@ -12,7 +12,8 @@ final class KoyomiLayout: UICollectionViewLayout {
     
     // Internal properties
     let inset: UIEdgeInsets
-    let cellSpace: CGFloat
+    let verCellSpace: CGFloat
+    let horCellSpace: CGFloat
     let sectionSpace: CGFloat
     let weekCellHeight: CGFloat
     
@@ -21,9 +22,10 @@ final class KoyomiLayout: UICollectionViewLayout {
     
     // MARK: - Initializer -
     
-    init(inset: UIEdgeInsets, cellSpace: CGFloat, sectionSpace: CGFloat, weekCellHeight: CGFloat) {
+    init(inset: UIEdgeInsets, verCellSpace: CGFloat, horCellSpace: CGFloat, sectionSpace: CGFloat, weekCellHeight: CGFloat) {
         self.inset = inset
-        self.cellSpace      = cellSpace
+        self.verCellSpace   = verCellSpace
+        self.horCellSpace   = horCellSpace
         self.sectionSpace   = sectionSpace
         self.weekCellHeight = weekCellHeight
         super.init()
@@ -80,8 +82,8 @@ private extension KoyomiLayout {
     func frame(at indexPath: IndexPath) -> CGRect {
         let isWeekCell = indexPath.section == 0
         
-        let availableWidth  = width - (cellSpace * CGFloat(Constant.columnCount - 1) + inset.right + inset.left)
-        let availableHeight = height - (cellSpace * CGFloat(Constant.maxLineSpaceCount) + inset.bottom + inset.top + sectionSpace + weekCellHeight)
+        let availableWidth  = width - (horCellSpace * CGFloat(Constant.columnCount - 1) + inset.right + inset.left)
+        let availableHeight = height - (verCellSpace * CGFloat(Constant.maxLineSpaceCount) + inset.bottom + inset.top + sectionSpace + weekCellHeight)
         
         var cellWidth  = availableWidth / Constant.columnCount
         let cellHeight = isWeekCell ? weekCellHeight : availableHeight / CGFloat(Constant.maxRowCount)
@@ -89,9 +91,9 @@ private extension KoyomiLayout {
         let row    = floor(CGFloat(indexPath.row) / Constant.columnCount)
         let column = CGFloat(indexPath.row) - row * Constant.columnCount
         
-        let lineSpace = row == 0 ? 0 : cellSpace
+        let lineSpace = row == 0 ? 0 : verCellSpace
         let y = isWeekCell ? inset.top : row * (cellHeight + lineSpace) + weekCellHeight + sectionSpace + inset.top
-        let x = (cellWidth + cellSpace) * column + inset.left
+        let x = (cellWidth + horCellSpace) * column + inset.left
         
         //For disappearing cell under specific width
         if x + cellWidth > width, indexPath.row % 7 == 6 {

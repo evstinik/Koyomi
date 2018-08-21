@@ -23,7 +23,7 @@ final class KoyomiCell: UICollectionViewCell {
     enum CellStyle {
         case standard, circle, semicircleEdge(position: SequencePosition), line(position: SequencePosition?)
         
-        enum SequencePosition { case left, middle, right }
+        enum SequencePosition { case left, middle, right, single }
     }
     
     // Internal properties
@@ -135,6 +135,19 @@ final class KoyomiCell: UICollectionViewCell {
                 
                 leftSemicircleView.mask(with: .none)
                 rightSemicircleView.mask(with: .right)
+            } else if case .single = position {
+                rightSemicircleView.isHidden = false
+                leftSemicircleView.isHidden  = false
+                self.backgroundColor = backgroundColor
+                
+                leftSemicircleView.backgroundColor  = color
+                rightSemicircleView.backgroundColor = color
+                
+                // for bug: unnecessary line
+                leftSemicircleView.frame.size.width = bounds.width / 2 + 1
+                
+                leftSemicircleView.mask(with: .left)
+                rightSemicircleView.mask(with: .right)
             }
             
         case .line(let position):
@@ -153,7 +166,7 @@ final class KoyomiCell: UICollectionViewCell {
             switch position {
             case .left:
                 lineView.frame.origin.x = bounds.width - lineView.frame.width
-            case .middle:
+            case .middle, .single:
                 lineView.frame.size.width = bounds.width
                 lineView.frame.origin.x   = (bounds.width - lineView.frame.width) / 2
             case .right:

@@ -209,9 +209,16 @@ final public class Koyomi: UICollectionView {
             sectionSeparator.frame.size.height = sectionSpace
         }
     }
-    @IBInspectable public var cellSpace: CGFloat = 0.5 {
+    @IBInspectable public var horCellSpace: CGFloat = 0.5 {
         didSet {
-            if let layout = collectionViewLayout as? KoyomiLayout, layout.cellSpace != cellSpace {
+            if let layout = collectionViewLayout as? KoyomiLayout, layout.horCellSpace != horCellSpace {
+                setCollectionViewLayout(self.layout, animated: false)
+            }
+        }
+    }
+    @IBInspectable public var verCellSpace: CGFloat = 0.5 {
+        didSet {
+            if let layout = collectionViewLayout as? KoyomiLayout, layout.verCellSpace != verCellSpace {
                 setCollectionViewLayout(self.layout, animated: false)
             }
         }
@@ -286,7 +293,7 @@ final public class Koyomi: UICollectionView {
     fileprivate let sectionSeparator: UIView = .init()
     
     fileprivate var layout: UICollectionViewLayout {
-        return KoyomiLayout(inset: inset, cellSpace: cellSpace, sectionSpace: sectionSpace, weekCellHeight: weekCellHeight)
+        return KoyomiLayout(inset: inset, verCellSpace: verCellSpace, horCellSpace: horCellSpace, sectionSpace: sectionSpace, weekCellHeight: weekCellHeight)
     }
     
     fileprivate var dayLabelFont: UIFont?
@@ -304,10 +311,11 @@ final public class Koyomi: UICollectionView {
         super.init(frame: frame, collectionViewLayout: layout)
     }
     
-    public init(frame: CGRect, sectionSpace: CGFloat = 1.5, cellSpace: CGFloat = 0.5, inset: UIEdgeInsets = .zero, weekCellHeight: CGFloat = 25) {
-        super.init(frame: frame, collectionViewLayout: KoyomiLayout(inset: inset, cellSpace: cellSpace, sectionSpace: sectionSpace, weekCellHeight: weekCellHeight))
+    public init(frame: CGRect, sectionSpace: CGFloat = 1.5, verCellSpace: CGFloat = 0.5, horCellSpace: CGFloat = 0.5, inset: UIEdgeInsets = .zero, weekCellHeight: CGFloat = 25) {
+        super.init(frame: frame, collectionViewLayout: KoyomiLayout(inset: inset, verCellSpace: verCellSpace, horCellSpace: horCellSpace, sectionSpace: sectionSpace, weekCellHeight: weekCellHeight))
         self.sectionSpace = sectionSpace
-        self.cellSpace = cellSpace
+        self.verCellSpace = verCellSpace
+        self.horCellSpace = horCellSpace
         self.inset = inset
         self.weekCellHeight = weekCellHeight
         configure()
@@ -472,6 +480,8 @@ private extension Koyomi {
                         return .left
                     } else if let _ = model.sequenceDates.start, let end = model.sequenceDates.end , date == end {
                         return .right
+                    } else if (date == model.sequenceDates.start && model.sequenceDates.end == nil) || (date == model.sequenceDates.end && model.sequenceDates.start == nil) {
+                        return .single
                     } else {
                         return .middle
                     }
