@@ -314,22 +314,13 @@ private extension DateModel {
     var calendar: Calendar { return Calendar.current }
     
     func setup() {
-        selectedDates = [:]
-        
         guard let indexAtBeginning = indexAtBeginning(in: .current) else { return }
 
         var components: DateComponents = .init()
-        currentDates = (0..<DateModel.maxCellCount).flatMap { index in
+        currentDates = (0..<DateModel.maxCellCount).compactMap { index in
                 components.day = index - indexAtBeginning
                 return calendar.date(byAdding: components, to: atBeginning(of: .current))
             }
-            .map { (date: Date) in
-                selectedDates[date] = false
-                return date
-            }
-        
-        let selectedDateKeys = selectedDates.keys(of: true)
-        selectedDateKeys.forEach { selectedDates[$0] = true }
     }
     
     func set(_ isSelected: Bool, withFrom fromDate: Date, to toDate: Date) {

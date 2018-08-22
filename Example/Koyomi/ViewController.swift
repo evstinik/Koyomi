@@ -232,7 +232,7 @@ extension ViewController {
 
 extension ViewController: KoyomiDelegate {
     func koyomi(_ koyomi: Koyomi, didSelect date: Date?, forItemAt indexPath: IndexPath) {
-        print("You Selected: \(date)")
+        print("You Selected: \(String(describing: date))")
     }
     
     func koyomi(_ koyomi: Koyomi, currentDateString dateString: String) {
