@@ -130,6 +130,10 @@ final class DateModel: NSObject {
         } else if let fromDate = fromDate.formated() {
             selectedDates[fromDate] = true
         }
+        if selectionMode == .sequence {
+            sequenceDates.start = fromDate
+            sequenceDates.end = toDate
+        }
     }
     
     // Unselect date in programmatically
