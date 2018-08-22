@@ -177,7 +177,8 @@ final class DateModel: NSObject {
             } else if let _ = sequenceDates.start, let _ = sequenceDates.end {
                 sequenceDates.start = selectedDate
                 sequenceDates.end   = nil
-                selectedDates.forEach { selectedDates[$0.0] = selectedDate == $0.0 ? true : false }
+                selectedDates.forEach { selectedDates[$0.0] = false }
+                selectedDates[selectedDate] = true
                 
             // user select selected date
             } else if let start = sequenceDates.start , sequenceDates.end == nil && start == selectedDate {
@@ -328,9 +329,11 @@ private extension DateModel {
     }
     
     func set(_ isSelected: Bool, withFrom fromDate: Date, to toDate: Date) {
-        currentDates
-            .filter { fromDate <= $0 && toDate >= $0 }
-            .forEach { selectedDates[$0] = isSelected }
+        var date = fromDate
+        while (date <= toDate) {
+            selectedDates[date] = isSelected
+            date = Calendar.current.date(byAdding: .day, value: 1, to: date) ?? toDate.addingTimeInterval(24 * 60 * 60 * 1000)
+        }
     }
     
     func atBeginning(of month: MonthType) -> Date {
