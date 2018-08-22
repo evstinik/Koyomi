@@ -8,7 +8,11 @@
 
 import UIKit
 
-public enum MonthType { case previous, current, next }
+public enum MonthType {
+    case previous, current, next
+    /// Current - actual current month, not selected one
+    case byOffsetFromCurrent(Int)
+}
 
 final class DateModel: NSObject {
     
@@ -100,7 +104,7 @@ final class DateModel: NSObject {
     
     func display(in month: MonthType) {
         currentDates = []
-        currentDate = month == .current ? Date() : date(of: month)
+        currentDate = date(of: month)
         setup()
     }
     
@@ -347,6 +351,8 @@ private extension DateModel {
             case .previous: return -1
             case .current:  return 0
             case .next:     return 1
+            case .byOffsetFromCurrent(let offset):
+                return offset - calendar.component(.month, from: currentDate)
             }
         }()
         return calendar.date(byAdding: components, to: currentDate) ?? Date()
