@@ -345,16 +345,15 @@ private extension DateModel {
     }
     
     func date(of month: MonthType) -> Date {
-        var components = DateComponents()
-        components.month = {
-            switch month {
-            case .previous: return -1
-            case .current:  return 0
-            case .next:     return 1
-            case .byOffsetFromCurrent(let offset):
-                return offset - calendar.component(.month, from: currentDate)
-            }
-        }()
-        return calendar.date(byAdding: components, to: currentDate) ?? Date()
+        switch month {
+        case .previous:
+            return calendar.date(byAdding: .month, value: -1, to: currentDate) ?? Date()
+        case .current:
+            return currentDate
+        case .next:
+            return calendar.date(byAdding: .month, value: 1, to: currentDate) ?? Date()
+        case .byOffsetFromCurrent(let offset):
+            return calendar.date(byAdding: .month, value: offset, to: Date()) ?? Date()
+        }
     }
 }
