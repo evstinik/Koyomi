@@ -155,13 +155,9 @@ final class DateModel: NSObject {
         switch selectionMode {
         case .single:
             selectedDates.forEach { [weak self] date, isSelected in
-                guard let me = self else { return }
-                if selectedDate == date {
-                    me.selectedDates[date] = me.selectedDates[date] == true ? false : true
-                } else if isSelected {
-                    me.selectedDates[date] = false
-                }
+                self?.selectedDates[date] = false
             }
+            selectedDates[selectedDate] = !(selectedDates[selectedDate] ?? false)
             
         case .multiple:
             selectedDates[date(at: indexPath)] = selectedDates[date(at: indexPath)] == true ? false : true

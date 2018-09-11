@@ -93,12 +93,19 @@ final class KoyomiCell: UICollectionViewCell {
         // isSelected is always true
         case .circle:
             circularView.backgroundColor = color
+            
+            rightSemicircleView.isHidden = false
+            leftSemicircleView.isHidden  = false
             self.backgroundColor = backgroundColor
             
-            circularView.isHidden  = false
-            lineView.isHidden = true
-            rightSemicircleView.isHidden = true
-            leftSemicircleView.isHidden  = true
+            leftSemicircleView.backgroundColor  = color
+            rightSemicircleView.backgroundColor = color
+            
+            // for bug: unnecessary line
+            leftSemicircleView.frame.size.width = bounds.width / 2 + 1
+            
+            leftSemicircleView.mask(with: .left)
+            rightSemicircleView.mask(with: .right)
             
         // isSelected is always true
         case .semicircleEdge(let position):
